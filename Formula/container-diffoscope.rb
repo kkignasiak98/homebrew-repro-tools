@@ -45,12 +45,53 @@ class ContainerDiffoscope < Formula
     sha256 "9b4f19e08fcc9427a822d1ef467b1fe76737a2f65c7926bdeba2337d73569b68"
   end
 
+  # polars ships as a pre-built binary wheel (Rust extension). Building it from
+  # an sdist would require a full Rust/Cargo toolchain, so we install the
+  # platform-specific wheel directly instead.
+  resource "polars" do
+    on_macos do
+      if Hardware::CPU.arm?
+        url "https://files.pythonhosted.org/packages/f8/15/1094099a1b9cb4fbff58cd8ed3af8964f4d22a5b682ea0b7bb72bf4bc3d9/polars-1.33.1-cp39-abi3-macosx_11_0_arm64.whl"
+        sha256 "29200b89c9a461e6f06fc1660bc9c848407640ee30fe0e5ef4947cfd49d55337"
+      else
+        url "https://files.pythonhosted.org/packages/19/79/c51e7e1d707d8359bcb76e543a8315b7ae14069ecf5e75262a0ecb32e044/polars-1.33.1-cp39-abi3-macosx_10_12_x86_64.whl"
+        sha256 "3881c444b0f14778ba94232f077a709d435977879c1b7d7bd566b55bd1830bb5"
+      end
+    end
+    on_linux do
+      if Hardware::CPU.arm?
+        url "https://files.pythonhosted.org/packages/7a/26/4c5da9f42fa067b2302fe62bcbf91faac5506c6513d910fae9548fc78d65/polars-1.33.1-cp39-abi3-manylinux_2_24_aarch64.whl"
+        sha256 "094a37d06789286649f654f229ec4efb9376630645ba8963b70cb9c0b008b3e1"
+      else
+        url "https://files.pythonhosted.org/packages/8d/b9/9ac769e4d8e8f22b0f2e974914a63dd14dec1340cd23093de40f0d67d73b/polars-1.33.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+        sha256 "444940646e76342abaa47f126c70e3e40b56e8e02a9e89e5c5d1c24b086db58a"
+      end
+    end
+  end
+
   def install
-    virtualenv_install_with_resources
+    # Install everything except polars from source via the normal flow.
+    venv = virtualenv_install_with_resources(without: "polars")
+
+    # polars is distributed only as a pre-built binary wheel (Rust extension).
+    # Homebrew's standard pip args force `--no-binary=:all:`, which would try to
+    # rebuild it from its sdist (needs a Rust toolchain), so install the wheel
+    # directly with our own pip invocation against the virtualenv.
+    #
+    # In short: take the polars wheel we downloaded and install that exact
+    # binary into the venv using the system pip (the venv has no pip of its
+    # own), without trying to rebuild it or fetch its dependencies.
+    python = Formula["python@3.14"].opt_bin/"python3.14"
+    resource("polars").stage do
+      wheel = Dir["polars-*.whl"].first
+      system python, "-m", "pip", "--python=#{venv.root}/bin/python",
+             "install", "--verbose", "--no-deps", "--ignore-installed",
+             "--no-compile", "--no-build-isolation", wheel
+    end
   end
 
   test do
-    system bin/"diffoscope", "--help"
+    system Formula["diffoscope"].opt_bin/"diffoscope", "--help"
     system bin/"container-diffoscope", "--help"
   end
 end
