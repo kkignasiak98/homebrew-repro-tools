@@ -1,0 +1,26 @@
+name: Test Formulas
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test formulas
+        run: |
+          for f in Formula/*.rb; do
+            name=$(basename "$f" .rb)
+            tap="${{ github.repository }}/$name"
+            brew audit --strict --new "$tap"
+            brew fetch -d -v "$tap"
+            brew install --build-from-source "$tap"
+            brew list | grep "$name"
+            brew test "$tap"
+          done
