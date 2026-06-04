@@ -7,3 +7,5 @@ brew install --build-from-source kkignasiak98/repro-tools/container-diffoscope
 brew list | grep container-diffoscope
 
 brew test kkignasiak98/repro-tools/container-diffoscope
+
+## Some tests
