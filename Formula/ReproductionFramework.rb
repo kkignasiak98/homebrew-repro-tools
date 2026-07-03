@@ -5,21 +5,21 @@
 class Reproductionframework < Formula
   desc "Reproduction Framework CLI tool"
   homepage "https://github.com/kkignasiak98/ReproductionFramework"
-  version "0.6.0"
+  version "0.7.0"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.6.0/ReproductionFramework_Darwin_x86_64.tar.gz"
-      sha256 "e2b43588a348b611d1879a54217f17bf47ae31e96a300da9c785ee82d1257baf"
+      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.7.0/ReproductionFramework_Darwin_x86_64.tar.gz"
+      sha256 "83d0a5e468d62bf7cd1637a5948431138ac30290c31eabe6eb068a785a025fff"
 
       define_method(:install) do
         bin.install "ReproductionFramework"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.6.0/ReproductionFramework_Darwin_arm64.tar.gz"
-      sha256 "e97d94fc7fbfabfb0793ff82ebc62e0d4e0dfcf8d997380c9afc4555206a126a"
+      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.7.0/ReproductionFramework_Darwin_arm64.tar.gz"
+      sha256 "3fac2021c5a71f9e6d18e7ce995cfeb4d6bb3473c973c879b0f2f458035cd7d6"
 
       define_method(:install) do
         bin.install "ReproductionFramework"
@@ -29,15 +29,15 @@ class Reproductionframework < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.6.0/ReproductionFramework_Linux_x86_64.tar.gz"
-      sha256 "55549d2e0e09abc036719302d9d412dca77750562e618921f24f480fbf0eb6e1"
+      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.7.0/ReproductionFramework_Linux_x86_64.tar.gz"
+      sha256 "4961c1487ce0de6e9ca3e83b3caa92f8a91df3ea7a5ce48451bafae5fd392a87"
       define_method(:install) do
         bin.install "ReproductionFramework"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.6.0/ReproductionFramework_Linux_arm64.tar.gz"
-      sha256 "5f7c8526228e03a4db6ad7204f215fef778f32bb824f6c156263cf1dfaa1ad31"
+      url "https://github.com/kkignasiak98/ReproductionFramework/releases/download/v0.7.0/ReproductionFramework_Linux_arm64.tar.gz"
+      sha256 "62d8bd42dde68bfe1bab1fb8d27dd6a3cdbd56255504f613c83ea2b7a9cb1565"
       define_method(:install) do
         bin.install "ReproductionFramework"
       end
